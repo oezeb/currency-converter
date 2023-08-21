@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Offline Currency Converter</string>
+    <string name="amount">Amount</string>
+    <string name="converted_amount">Converted Amount</string>
+    <string name="no_rate_available">No rate available</string>
+    <string name="edit_currency_list">Edit Currency List</string>
+    <string name="title">Currency Converter</string>
+    <string name="slogan">100+ currencies at your fingertips</string>
+    <string name="about">About</string>
+
+    <!-- Test Add Units-->
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admob_banner_id">ca-app-pub-3940256099942544/6300978111</string>
+</resources>

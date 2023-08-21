@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background"
+    tools:context=".MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="5dp"
+            android:layout_gravity="end"
+            android:src="@drawable/baseline_menu_24"
+            android:background="@android:color/transparent"
+            android:onClick="showPopup" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:text="@string/title"
+            android:fontFamily="@font/roboto_bold"
+            android:textColor="#1F2261"
+            android:textSize="25sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto"
+            android:text="@string/slogan"
+            android:textColor="#808080"
+            android:textSize="16sp" />
+        <LinearLayout
+            android:id="@+id/convert_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="40dp"
+            android:padding="20dp"
+            android:background="@drawable/convert_box_background">
+            <include android:id="@+id/base_currency_row"
+                layout="@layout/currency_row" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/line_background">
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_exchange"
+                    android:padding="15dp"
+                    android:background="@drawable/ic_exchange_background"
+                    android:layout_gravity="center"
+                    android:onClick="swapCurrency" />
+            </FrameLayout>
+            <include android:id="@+id/quote_currency_row"
+                layout="@layout/currency_row" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="20dp"
+            android:layout_gravity="end"
+            android:textColor="#989898"
+            android:textSize="13sp"
+            android:fontFamily="@font/roboto" />
+    </LinearLayout>
+    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/bannerAdView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:adSize="FULL_BANNER"
+        ads:adUnitId="@string/admob_banner_id" />
+</LinearLayout>

@@ -1,0 +1,7 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.OfflineCurrencyConverter" parent="Theme.Material3.DayNight.NoActionBar">
+         <item name="colorPrimary">@color/color_primary</item>
+    </style>
+
+    <style name="Theme.OfflineCurrencyConverter" parent="Base.Theme.OfflineCurrencyConverter" />
+</resources>
