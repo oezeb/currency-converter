@@ -13,7 +13,7 @@ import kotlin.concurrent.thread
 class CurrencyListAdapter(private val data: List<Currency>)
     : RecyclerView.Adapter<CurrencyListAdapter.ViewHolder>() {
     companion object {
-        var selectCurrencySet: MutableSet<String>? = null
+        var selectedCurrencySet: Set<String>? = null
         var onClickListener: ((ViewHolder, Int, Currency) -> Unit)? = null
     }
 
@@ -45,7 +45,7 @@ class CurrencyListAdapter(private val data: List<Currency>)
         }
 
         thread {
-            val flag = SpinnerAdapter.getLag?.invoke(data[position].countryCode)
+            val flag = getFlag(holder.view.context, data[position].countryCode)
             val handler = Handler(Looper.getMainLooper())
             handler.post {
                 holder.flag.setImageDrawable(flag)
@@ -55,7 +55,7 @@ class CurrencyListAdapter(private val data: List<Currency>)
         holder.code.text = data[position].code.uppercase()
         holder.name.text = data[position].name
         holder.rightIcon.setImageResource(
-            if (selectCurrencySet?.contains(data[position].code) == true) {
+            if (selectedCurrencySet?.contains(data[position].code) == true) {
                 R.drawable.outline_check_box_24
             } else {
                 R.drawable.outline_check_box_outline_blank_24

@@ -10,8 +10,33 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.Date
+
+fun getFlag(context: Context, countryCode: String): Drawable? {
+    val path = File(context.cacheDir, "flags")
+    if (!path.exists()) path.mkdirs()
+
+    val code = countryCode.lowercase()
+    val url = context.getString(R.string.flag_url, code)
+    val filename = "${code}.png"
+    val file = File(path, filename)
+
+    val options = BitmapFactory.Options()
+    options.inDensity = DisplayMetrics.DENSITY_DEFAULT
+    return try {
+        val bitmap = if (file.exists()) {
+            val data = file.readBytes()
+            BitmapFactory.decodeByteArray(data, 0, data.size, options)
+        } else {
+            val data = URL(url).readBytes()
+            file.writeBytes(data)
+            BitmapFactory.decodeByteArray(data, 0, data.size, options)
+        }
+        BitmapDrawable(context.resources, bitmap)
+    } catch (e: Exception) {
+        Log.d("CurrencyManager", "get flag exception $e", e)
+        null
+    }
+}
 
 fun JSONObject.toMap(): Map<String, *> = keys().asSequence().associateWith {
     when (val value = get(it)) {

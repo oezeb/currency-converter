@@ -20,40 +20,26 @@ class CurrencyListActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recycle_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         thread {
-            val favorites = currencyManager.getFavoriteSet().toMutableSet()
+            val favorites = currencyManager.favoriteCurrencies
             val currencies = currencyManager.currencies.values.toList().sortedByDescending{
                 favorites.contains(it.code)
             }
 
-            CurrencyListAdapter.selectCurrencySet = favorites
+            CurrencyListAdapter.selectedCurrencySet = favorites
             recyclerView.adapter = CurrencyListAdapter(currencies)
         }
 
         CurrencyListAdapter.onClickListener = {_, position, value ->
-            val selected = CurrencyListAdapter.selectCurrencySet.orEmpty()
-            if (selected.contains(value.code)) removeFavorite(value.code)
-            else addFavorite(value.code)
+            val selected = CurrencyListAdapter.selectedCurrencySet.orEmpty()
+            if (selected.contains(value.code)) currencyManager.removeFavorite(value.code)
+            else currencyManager.addFavorite(value.code)
+            CurrencyListAdapter.selectedCurrencySet = currencyManager.favoriteCurrencies
             recyclerView.adapter?.notifyItemChanged(position)
         }
-
 
         // Initialize the Mobile Ads SDK
         MobileAds.initialize(this)
         findViewById<AdView>(R.id.bannerAdView).apply { loadAd(AdRequest.Builder().build()) }
-    }
-
-    private fun addFavorite(code: String) {
-        thread { currencyManager.addFavorite(code) }
-        if (CurrencyListAdapter.selectCurrencySet == null) {
-            CurrencyListAdapter.selectCurrencySet = mutableSetOf(code)
-        } else {
-            CurrencyListAdapter.selectCurrencySet!!.add(code)
-        }
-    }
-
-    private fun removeFavorite(code: String) {
-        thread { currencyManager.removeFavorite(code) }
-        CurrencyListAdapter.selectCurrencySet?.remove(code)
     }
 
     fun popActivity(v: View) = finish()

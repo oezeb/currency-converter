@@ -1,12 +1,21 @@
 <resources>
-    <string name="app_name">Offline Currency Converter</string>
+    <string name="app_name">Currency Converter</string>
     <string name="amount">Amount</string>
     <string name="converted_amount">Converted Amount</string>
     <string name="no_rate_available">No rate available</string>
     <string name="edit_currency_list">Edit Currency List</string>
-    <string name="title">Currency Converter</string>
     <string name="slogan">100+ currencies at your fingertips</string>
     <string name="about">About</string>
+
+    <!-- Get Currency rate from https://github.com/fawazahmed0/currency-api -->
+    <string name="currency_rate_url">
+        https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/%s/%s.json
+    </string>
+
+    <!-- Get country flag from https://flagpedia.net -->
+    <string name="flag_url">
+        https://flagcdn.com/w80/%s.png
+    </string>
 
     <!-- Test Add Units-->
     <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>

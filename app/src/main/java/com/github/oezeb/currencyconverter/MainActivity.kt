@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
@@ -24,7 +23,7 @@ import java.util.Date
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
-    private val currencyManager = CurrencyManager(this)
+    private var currencyManager = CurrencyManager(this)
 
     private lateinit var baseSpinner: Spinner
     private lateinit var baseTextField: TextInputEditText
@@ -36,8 +35,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     private val editListActivityLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            currencyManager = CurrencyManager(this)
             thread {
-                val currencies = currencyManager.getFavoriteCurrencies().values.toList()
+                val currencies = getFavoriteCurrencies().values.toList()
                 Handler(Looper.getMainLooper()).post { setSpinnerCurrencies(currencies) }
             }
         }
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         override fun onNothingSelected(p0: AdapterView<*>?) = Unit
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             val item = baseSpinner.getItemAtPosition(position) as Currency
-            thread { currencyManager.setBaseCurrency(item.code) }
+            currencyManager.baseCurrency = item.code
             updateRate()
         }
     }
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         override fun onNothingSelected(p0: AdapterView<*>?) = Unit
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             val item = quoteSpinner.getItemAtPosition(position) as Currency
-            thread { currencyManager.setQuoteCurrency(item.code) }
+            currencyManager.quoteCurrency = item.code
             updateRate()
         }
     }
@@ -63,7 +63,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        SpinnerAdapter.getLag = { countryCode -> currencyManager.getFlag(countryCode) }
 
         findViewById<LinearLayout>(R.id.base_currency_row).let { baseRow ->
             baseTextField = baseRow.findViewById(R.id.convert_row_textfield)
@@ -89,7 +88,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         rateView = findViewById(R.id.rate)
 
         thread {
-            val currencies = currencyManager.getFavoriteCurrencies().values.toList()
+            val currencies = getFavoriteCurrencies().values.toList()
             Handler(Looper.getMainLooper()).post {
                 setSpinnerCurrencies(currencies)
                 updateRate()
@@ -101,6 +100,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         findViewById<AdView>(R.id.bannerAdView).apply { loadAd(AdRequest.Builder().build()) }
     }
 
+    private fun getFavoriteCurrencies(): Map<String, Currency> =
+        currencyManager.currencies.filter { currencyManager.favoriteCurrencies.contains(it.key) }
 
     private fun updateRate() {
         val value = baseTextField.text.toString()
@@ -138,29 +139,19 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
-    private fun setSpinnerSelection(spinner: Spinner, position: Int, type: CurrencyType) {
-        val item = spinner.getItemAtPosition(position) as Currency
-        thread {
-            when (type) {
-                CurrencyType.Base -> currencyManager.setBaseCurrency(item.code)
-                CurrencyType.Quote -> currencyManager.setQuoteCurrency(item.code)
-            }
-        }
-        spinner.setSelection(position)
-    }
-
     private fun setSpinnerCurrencies(currencies: List<Currency>) {
         baseSpinner.adapter = SpinnerAdapter(currencies)
         quoteSpinner.adapter = SpinnerAdapter(currencies)
 
-        val base = currencyManager.getBaseCurrency()
-        val quote = currencyManager.getQuoteCurrency()
-        Log.d("Main", "Base: $base, Quote: $quote")
-        if (base != null && quote != null) {
+        val base = currencyManager.baseCurrency
+        val quote = currencyManager.quoteCurrency
+        if (base.isNotEmpty()) {
             val basePosition = currencies.indexOfFirst { it.code == base }
+            if (basePosition != -1) baseSpinner.setSelection(basePosition)
+        }
+        if (quote.isNotEmpty()) {
             val quotePosition = currencies.indexOfFirst { it.code == quote }
-            baseSpinner.setSelection(basePosition)
-            quoteSpinner.setSelection(quotePosition)
+            if (quotePosition != -1) quoteSpinner.setSelection(quotePosition)
         }
     }
 
@@ -189,7 +180,13 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     fun swapCurrency(v: View) {
         val basePosition = baseSpinner.selectedItemPosition
         val quotePosition = quoteSpinner.selectedItemPosition
-        setSpinnerSelection(baseSpinner, quotePosition, CurrencyType.Base)
-        setSpinnerSelection(quoteSpinner, basePosition, CurrencyType.Quote)
+
+        baseSpinner.setSelection(quotePosition)
+        quoteSpinner.setSelection(basePosition)
+
+        val base = baseSpinner.getItemAtPosition(basePosition) as Currency
+        val quote = baseSpinner.getItemAtPosition(basePosition) as Currency
+        currencyManager.baseCurrency = quote.code
+        currencyManager.quoteCurrency = base.code
     }
 }

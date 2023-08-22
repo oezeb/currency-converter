@@ -1,6 +1,5 @@
 package com.github.oezeb.currencyconverter
 
-import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -12,10 +11,6 @@ import android.widget.TextView
 import kotlin.concurrent.thread
 
 class SpinnerAdapter(private val data: List<Currency>): BaseAdapter() {
-    companion object {
-        var getLag: ((String) -> Drawable?)? = null
-    }
-
     override fun getCount(): Int = data.size
     override fun getItem(position: Int): Any = data[position]
     override fun getItemId(position: Int): Long = position.toLong()
@@ -32,7 +27,7 @@ class SpinnerAdapter(private val data: List<Currency>): BaseAdapter() {
                     data[position].name
                 val flagView = findViewById<ImageView>(R.id.flag)
                 thread {
-                    val flag = getLag?.invoke(data[position].countryCode)
+                    val flag = parent?.context?.let { getFlag(it, data[position].countryCode) }
                     val handler = Handler(Looper.getMainLooper())
                     handler.post {
                         flagView.setImageDrawable(flag)
