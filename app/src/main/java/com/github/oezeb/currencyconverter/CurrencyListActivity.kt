@@ -1,6 +1,7 @@
 package com.github.oezeb.currencyconverter
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,6 +10,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import kotlin.concurrent.thread
+
 
 class CurrencyListActivity : AppCompatActivity() {
     private val currencyManager = CurrencyManager(this)
@@ -37,10 +39,11 @@ class CurrencyListActivity : AppCompatActivity() {
             recyclerView.adapter?.notifyItemChanged(position)
         }
 
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+
         // Initialize the Mobile Ads SDK
         MobileAds.initialize(this)
         findViewById<AdView>(R.id.bannerAdView).apply { loadAd(AdRequest.Builder().build()) }
     }
-
-    fun popActivity(v: View) = finish()
 }
