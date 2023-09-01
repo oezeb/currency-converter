@@ -19,8 +19,4 @@
 
     <string name="admob_app_id">ca-app-pub-6093428284595418~6566964346</string>
     <string name="admob_banner_id">ca-app-pub-6093428284595418/8354688735</string>
-
-    <!-- Test Add Units-->
-    <!-- <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="admob_banner_id">ca-app-pub-3940256099942544/6300978111</string> -->
 </resources>
